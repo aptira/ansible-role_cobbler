@@ -74,6 +74,4 @@
          --name={{ cobbler_distro_name }}-{{ cobbler_distro_arch }}
          --kickstart=/var/lib/cobbler/kickstarts/default.ks
 
-- name: "Add systems to cobbler"
-  include: nodes.yml
-  
+
