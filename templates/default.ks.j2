@@ -84,4 +84,9 @@ cat <<EOF >/root/.ssh/authorized_keys
 {{ ssh_pub_key }}
 EOF
 chmod 700 /root/.ssh
+yum install ipmitool
+modprobe ipmi_devintf
+modprobe ipmi_si
+modprobe ipmi_msghandler
+ipmitool chassis bootdev disk
 %end
