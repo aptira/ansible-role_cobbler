@@ -83,4 +83,5 @@ mkdir /root/.ssh
 cat <<EOF >/root/.ssh/authorized_keys
 {{ ssh_pub_key }}
 EOF
+chmod 700 /root/.ssh
 %end
