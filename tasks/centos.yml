@@ -25,9 +25,11 @@
 
 - name: Template /etc/cobbler/dhcp.template
   template: src=dhcp.template.j2 dest=/etc/cobbler/dhcp.template backup=yes
+  notify: sync cobbler
 
 - name: Template default.ks
   template: src=default.ks.j2 dest=/var/lib/cobbler/kickstarts/default.ks
+  notify: sync cobbler
 
 - name: Enable tftp in /etc/xinetd.d/tftp
   lineinfile: dest=/etc/xinetd.d/tftp regexp="disable" line="disable = no" backup=yes
