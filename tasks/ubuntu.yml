@@ -1,0 +1,7 @@
+---
+
+
+
+
+- name: "Add systems to cobbler"
+  include: nodes.yml

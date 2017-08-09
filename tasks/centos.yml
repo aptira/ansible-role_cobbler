@@ -1,0 +1,79 @@
+---
+- name: Disable SElinux
+  selinux: state=disabled
+
+- name: Disable firewalld
+  service: name=firewalld state=stopped enabled=no
+
+- name: Install cobbler and its dependencies
+  yum: name={{ item }} state=present
+  with_items:
+    - cobbler
+    - dhcp
+    - pykickstart
+    - fence-agents-all
+    - debmirror
+
+
+- name: Generate crypted password
+  shell: openssl passwd -1 {{ cobbler_default_password }}
+  register: cobbler_default_password_crypted
+
+- name: Template /etc/cobbler/settings
+  template: src=settings.j2 dest=/etc/cobbler/settings backup=yes
+  notify: restart cobblerd
+
+- name: Template /etc/cobbler/dhcp.template
+  template: src=dhcp.template.j2 dest=/etc/cobbler/dhcp.template backup=yes
+
+- name: Template default.ks
+  template: src=default.ks.j2 dest=/var/lib/cobbler/kickstarts/default.ks
+
+- name: Enable tftp in /etc/xinetd.d/tftp
+  lineinfile: dest=/etc/xinetd.d/tftp regexp="disable" line="disable = no" backup=yes
+
+- name: Start and enable service
+  service: name={{ item }} state=started enabled=yes
+  with_items:
+    - rsyncd
+    - tftp
+    - httpd
+    - cobblerd
+
+- name: Cobbler get-loaders
+  shell: cobbler get-loaders
+
+- name: Download {{ cobbler_distro_iso_url }} with md5sum check
+  get_url:
+    url: "{{ cobbler_distro_iso_url }}"
+    dest: "{{ cobbler_distro_local_file }}"
+    checksum: md5:{{ cobbler_distro_md5 }}
+
+- name: Mount {{ cobbler_distro_local_file }} /mnt/{{ cobbler_distro_name }}
+  mount:
+    path: /mnt/{{ cobbler_distro_name }}
+    src: "{{ cobbler_distro_local_file }}"
+    fstype: iso9660
+    opts: ro
+    state: mounted
+
+- name: Test if distro {{ cobbler_distro_name }}-{{ cobbler_distro_arch }} exists
+  command: cobbler distro report --name={{ cobbler_distro_name }}-{{ cobbler_distro_arch }}
+  register: distro_exist
+  failed_when: false
+  
+
+- name: Import {{ cobbler_distro_name }} to cobbler
+  shell: cobbler import --name={{ cobbler_distro_name }}
+         --arch={{ cobbler_distro_arch }}
+         --path=/mnt/{{ cobbler_distro_name }}
+  when: distro_exist.rc != 0
+
+- name: Use default.ks for profile
+  shell: cobbler profile edit
+         --name={{ cobbler_distro_name }}-{{ cobbler_distro_arch }}
+         --kickstart=/var/lib/cobbler/kickstarts/default.ks
+
+- name: "Add systems to cobbler"
+  include: nodes.yml
+  

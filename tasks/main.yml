@@ -1,0 +1,7 @@
+---
+- name: "Install Cobbler on CentOS 7.3.1611"
+  include: centos.yml
+  when: ansible_distribution == 'CentOS' and ansible_distribution_version == '7.3.1611'
+- name: "Install Cobbler on Ubuntu 16.04"
+  include: ubuntu.yml
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'Xenial' 
