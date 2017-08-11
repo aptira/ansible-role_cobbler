@@ -27,9 +27,12 @@
   template: src=dhcp.template.j2 dest=/etc/cobbler/dhcp.template backup=yes
   notify: sync cobbler
 
-- name: Template default.ks
-  template: src=default.ks.j2 dest=/var/lib/cobbler/kickstarts/default.ks
+- name: Template centos7.ks
+  template: src=centos7.ks.j2 dest=/var/lib/cobbler/kickstarts/centos7.ks
   notify: sync cobbler
+
+- name: copy disk_partition snippet
+  copy: src=disk_partition dest=/var/lib/cobbler/snippets/disk_partition
 
 - name: Enable tftp in /etc/xinetd.d/tftp
   lineinfile: dest=/etc/xinetd.d/tftp regexp="disable" line="disable = no" backup=yes
@@ -71,9 +74,9 @@
          --path=/mnt/{{ cobbler_distro_name }}
   when: distro_exist.rc != 0
 
-- name: Use default.ks for profile
+- name: Use centos7.ks for profile
   shell: cobbler profile edit
          --name={{ cobbler_distro_name }}-{{ cobbler_distro_arch }}
-         --kickstart=/var/lib/cobbler/kickstarts/default.ks
+         --kickstart=/var/lib/cobbler/kickstarts/centos7.ks
 
 

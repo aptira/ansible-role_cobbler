@@ -1,0 +1,19 @@
+#set $hostname = $getVar('$hostname', None)
+#set $hostpart = $getVar('$hostpart', None)
+#set $disk = $getVar('$disk', 'sda')
+
+#if $hostname == None
+#set $vgname = "VolGroup00"
+#else
+#if $hostpart == None
+#set $hostpart = $hostname.split('.')[0]
+#set $vgname = $hostpart + '_sys'
+#end if
+#end if
+
+clearpart --drives=$disk --initlabel
+part /boot --fstype ext3 --size=200 --asprimary --ondisk=$disk
+part swap --size=4000 --asprimary --ondisk=$disk
+part pv.00 --size=100 --grow --asprimary --ondisk=$disk
+volgroup $vgname pv.00
+logvol / --vgname=$vgname --size=16000 --grow --name=sysroot --fstype xfs

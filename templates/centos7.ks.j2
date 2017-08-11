@@ -40,9 +40,8 @@ timezone  America/New_York
 install
 # Clear the Master Boot Record
 zerombr
-# Allow anaconda to partition the system as needed
-ignoredisk --only-use=sda
-autopart
+# use sda for OS
+$SNIPPET('disk_partition')
 
 %pre
 $SNIPPET('log_ks_pre')
