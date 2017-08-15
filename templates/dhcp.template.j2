@@ -19,8 +19,12 @@ set vendorclass = option vendor-class-identifier;
 option pxe-system-type code 93 = unsigned integer 16;
 
 subnet {{ cobbler_subnet }} netmask {{ cobbler_netmask }} {
+{% if cobbler_router is defined %}
      option routers             {{ cobbler_router }};
+{% endif %}
+{% if cobbler_dns_server is defined %}
      option domain-name-servers {{ cobbler_dns_server }};
+{% endif %}
      option subnet-mask         {{ cobbler_netmask }};
      range dynamic-bootp        {{ cobbler_range }};
      default-lease-time         21600;
