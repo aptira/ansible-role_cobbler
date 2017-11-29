@@ -79,4 +79,6 @@
          --name={{ cobbler_distro_name }}-{{ cobbler_distro_arch }}
          --kickstart=/var/lib/cobbler/kickstarts/centos7.ks
 
+- name: Start and enable dhcpd service
+  service: name=dhcpd state=started enabled=yes
 
