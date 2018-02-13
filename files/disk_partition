@@ -11,7 +11,7 @@
 #end if
 #end if
 
-clearpart --drives=$disk --initlabel
+clearpart --drives=$disk --all
 part /boot --fstype ext3 --size=200 --asprimary --ondisk=$disk
 part swap --size=4000 --asprimary --ondisk=$disk
 part pv.00 --size=100 --grow --asprimary --ondisk=$disk

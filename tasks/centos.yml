@@ -13,6 +13,9 @@
     - pykickstart
     - fence-agents-all
     - debmirror
+    - dnsmasq
+    - xinetd
+    - tftp
 
 
 - name: Generate crypted password
@@ -45,6 +48,7 @@
     - httpd
     - cobblerd
 
+# need to add local copy
 - name: Cobbler get-loaders
   shell: cobbler get-loaders
 
@@ -78,6 +82,9 @@
   shell: cobbler profile edit
          --name={{ cobbler_distro_name }}-{{ cobbler_distro_arch }}
          --kickstart=/var/lib/cobbler/kickstarts/centos7.ks
+
+- name: Cobbler Sync
+  shell: cobbler sync
 
 - name: Start and enable dhcpd service
   service: name=dhcpd state=started enabled=yes
