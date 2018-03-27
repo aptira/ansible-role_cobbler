@@ -1,6 +1,7 @@
 ---
 - name: Test if repo {{ repo.name }} exists
   command: cobbler repo report --name={{ repo.name }}
+  failed_when: false
   register: repo_exist
 
 - name: add repo if not exists
