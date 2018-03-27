@@ -5,3 +5,4 @@
 
 - name: add repo if not exists
   command: cobbler repo add --name={{ repo.name }} --arch={{ repo.arch }} --mirror={{ repo.mirror }}
+  when: repo_exist.rc != 0

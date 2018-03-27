@@ -92,7 +92,7 @@
 - include_tasks: add_repo.yml
   vars:
     repo: "{{ item }}"
-  with_items: cobbler_repos
+  with_items: "{{ cobbler_repos }}"
   
 - name: sync repos
   shell: cobbler reposync
