@@ -89,3 +89,10 @@
 - name: Start and enable dhcpd service
   service: name=dhcpd state=started enabled=yes
 
+- include_tasks: add_repo.yml
+  with_items: cobbler_repos
+  
+- name: sync repos
+  shell: cobbler reposync
+  when: cobbler_sync_repos
+  

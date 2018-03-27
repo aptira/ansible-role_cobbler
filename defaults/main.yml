@@ -1,2 +1,7 @@
 ---
-# defaults file for cobbler
+# cobbler repo
+cobbler_repos: []
+#  - name: epel
+#    arch: x86_64
+#    mirror: http://10.30.0.1/cobbler/repo_mirror/epel
+cobbler_sync_repos: false

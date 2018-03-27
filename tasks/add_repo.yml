@@ -1,0 +1,7 @@
+---
+- name: Test if repo {{ item.name }} exists
+  command: cobbler repo report --name={{ item.name }}
+  register: repo_exist
+
+- name: add repo if not exists
+  command: cobbler repo add --name={{ item.name }} --arch={{ item.arch }} --mirror={{ item.mirror }}
