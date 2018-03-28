@@ -93,6 +93,10 @@
   vars:
     repo: "{{ item }}"
   with_items: "{{ cobbler_repos }}"
+
+- name: add repos to profile
+  shell: cobbler profile edit  --name={{ cobbler_distro_name }}-{{ cobbler_distro_arch }} 
+         --repos "{% for repo in cobbler_repos %}{{ repo.name }}{{ ' ' if not loop.last else '' }}{% endfor %}"
   
 - name: sync repos
   shell: cobbler reposync
